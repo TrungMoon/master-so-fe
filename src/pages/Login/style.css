@@ -1,0 +1,32 @@
+.login-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.app-title {
+  margin-bottom: 10px !important;
+  color: #1890ff;
+}
+
+.app-subtitle {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin: 0 auto;
+} 
