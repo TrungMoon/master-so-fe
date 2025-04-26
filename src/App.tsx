@@ -6,6 +6,9 @@ import Article from './pages/Article';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Stories from './pages/Stories';
+import StoryCreate from './pages/Stories/Create';
+import StoryModeration from './pages/Admin/StoryModeration';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css';
@@ -28,6 +31,21 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+// Admin route component
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading, isAdmin } = useAuth();
+  
+  if (loading) {
+    return <div>Đang tải...</div>;
+  }
+  
+  if (!user || !isAdmin()) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -38,8 +56,37 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<LayoutComponent><Home /></LayoutComponent>} />
             <Route path="/articles/:category" element={<LayoutComponent><Article /></LayoutComponent>} />
+            <Route path="/stories" element={<LayoutComponent><Stories /></LayoutComponent>} />
+            
+            {/* Story creation route - protected */}
+            <Route 
+              path="/stories/create" 
+              element={
+                <ProtectedRoute>
+                  <LayoutComponent><StoryCreate /></LayoutComponent>
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Admin routes */}
+            <Route 
+              path="/admin/stories" 
+              element={
+                <AdminRoute>
+                  <LayoutComponent><StoryModeration /></LayoutComponent>
+                </AdminRoute>
+              } 
+            />
             
             {/* Protected routes */}
+            <Route 
+              path="/tools" 
+              element={
+                <ProtectedRoute>
+                  <LayoutComponent><Tools /></LayoutComponent>
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/tools/calculator" 
               element={

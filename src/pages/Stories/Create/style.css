@@ -1,0 +1,15 @@
+.create-story-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.breadcrumb {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .create-story-container {
+    padding: 16px;
+  }
+} 

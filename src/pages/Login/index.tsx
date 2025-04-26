@@ -8,7 +8,7 @@ const { Title } = Typography;
 const Login: React.FC = () => {
   return (
     <div className="login-container">
-      <Row justify="center" align="middle" style={{ minHeight: '80vh' }}>
+      <Row justify="center" align="middle" style={{ width: '100%' }}>
         <Col xs={22} sm={16} md={12} lg={8}>
           <Card className="login-card" bordered={false}>
             <div className="text-center">

@@ -1,37 +1,40 @@
 import React from 'react';
-import { Form, Input, Button, DatePicker, Divider, Typography } from 'antd';
+import { Form, Input, Button, Divider, Typography, notification, DatePicker } from 'antd';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { UserOutlined, LockOutlined, PhoneOutlined, CalendarOutlined, MailOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, CalendarOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 const { Title } = Typography;
+
+interface RegisterFormValues {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phone: string;
+  dateOfBirth: moment.Moment | null;
+}
 
 const RegisterForm: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const formik = useFormik({
+  const formik = useFormik<RegisterFormValues>({
     initialValues: {
       fullName: '',
-      phone: '',
-      dateOfBirth: null,
       email: '',
       password: '',
       confirmPassword: '',
+      phone: '',
+      dateOfBirth: null,
     },
     validationSchema: Yup.object({
       fullName: Yup.string()
-        .required('Vui lòng nhập họ và tên'),
-      phone: Yup.string()
-        .required('Vui lòng nhập số điện thoại')
-        .matches(/^[0-9]{10}$/, 'Số điện thoại không hợp lệ'),
-      dateOfBirth: Yup.date()
-        .required('Vui lòng chọn ngày sinh')
-        .max(new Date(), 'Ngày sinh không hợp lệ'),
+        .required('Vui lòng nhập họ tên')
+        .min(3, 'Họ tên phải có ít nhất 3 ký tự'),
       email: Yup.string()
         .email('Email không hợp lệ')
         .required('Vui lòng nhập email'),
@@ -39,47 +42,70 @@ const RegisterForm: React.FC = () => {
         .required('Vui lòng nhập mật khẩu')
         .min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
       confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password')], 'Mật khẩu không khớp')
+        .oneOf([Yup.ref('password'), undefined], 'Mật khẩu xác nhận không khớp')
         .required('Vui lòng xác nhận mật khẩu'),
+      phone: Yup.string()
+        .required('Vui lòng nhập số điện thoại'),
+      dateOfBirth: Yup.date()
+        .required('Vui lòng chọn ngày sinh'),
     }),
     onSubmit: async (values) => {
       try {
+        const { fullName, email, password, phone, dateOfBirth } = values;
         await register({
-          fullName: values.fullName,
-          phone: values.phone,
-          dateOfBirth: values.dateOfBirth as unknown as Date,
-          email: values.email,
-          password: values.password,
+          fullName,
+          email,
+          password,
+          phone,
+          dateOfBirth: dateOfBirth?.toDate() || new Date(),
         });
-        navigate('/');
+        notification.success({
+          message: 'Registration successful',
+          description: 'You have successfully registered. Please login.',
+        });
+        navigate('/login');
       } catch (error) {
-        console.error('Registration error:', error);
+        notification.error({
+          message: 'Registration failed',
+          description: error instanceof Error ? error.message : 'Something went wrong',
+        });
       }
     },
   });
-
-  const disabledDate = (current: Dayjs) => {
-    return current && current > dayjs();
-  };
 
   return (
     <div className="auth-form">
       <Title level={2} style={{ textAlign: 'center' }}>Đăng Ký</Title>
       <Divider />
       
-      <Form layout="vertical" onFinish={formik.handleSubmit}>
+      <Form layout="vertical" onFinish={formik.handleSubmit} style={{ width: '100%' }}>
         <Form.Item 
-          label="Họ và tên"
+          label="Họ và Tên"
           validateStatus={formik.errors.fullName && formik.touched.fullName ? 'error' : ''}
           help={formik.touched.fullName && formik.errors.fullName}
         >
           <Input
             prefix={<UserOutlined />}
-            placeholder="Nhập họ và tên đầy đủ"
+            placeholder="Nhập họ và tên"
             name="fullName"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.fullName}
+          />
+        </Form.Item>
+
+        <Form.Item 
+          label="Email"
+          validateStatus={formik.errors.email && formik.touched.email ? 'error' : ''}
+          help={formik.touched.email && formik.errors.email}
+        >
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="Nhập email của bạn"
+            name="email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
           />
         </Form.Item>
 
@@ -101,34 +127,17 @@ const RegisterForm: React.FC = () => {
         <Form.Item 
           label="Ngày sinh"
           validateStatus={formik.errors.dateOfBirth && formik.touched.dateOfBirth ? 'error' : ''}
-          help={formik.touched.dateOfBirth && formik.errors.dateOfBirth as string}
+          help={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
         >
-          <DatePicker 
+          <DatePicker
             style={{ width: '100%' }}
-            format="DD/MM/YYYY"
             placeholder="Chọn ngày sinh"
-            disabledDate={disabledDate}
-            onChange={(date) => {
-              formik.setFieldValue('dateOfBirth', date ? date.toDate() : null);
-            }}
-            onBlur={formik.handleBlur}
             name="dateOfBirth"
-            suffixIcon={<CalendarOutlined />}
-          />
-        </Form.Item>
-
-        <Form.Item 
-          label="Email"
-          validateStatus={formik.errors.email && formik.touched.email ? 'error' : ''}
-          help={formik.touched.email && formik.errors.email}
-        >
-          <Input
-            prefix={<MailOutlined />}
-            placeholder="Nhập email"
-            name="email"
-            onChange={formik.handleChange}
+            format="DD/MM/YYYY"
+            onChange={(date) => formik.setFieldValue('dateOfBirth', date)}
             onBlur={formik.handleBlur}
-            value={formik.values.email}
+            value={formik.values.dateOfBirth}
+            suffixIcon={<CalendarOutlined />}
           />
         </Form.Item>
 
@@ -139,7 +148,7 @@ const RegisterForm: React.FC = () => {
         >
           <Input.Password
             prefix={<LockOutlined />}
-            placeholder="Nhập mật khẩu"
+            placeholder="Nhập mật khẩu của bạn"
             name="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -154,7 +163,7 @@ const RegisterForm: React.FC = () => {
         >
           <Input.Password
             prefix={<LockOutlined />}
-            placeholder="Xác nhận mật khẩu"
+            placeholder="Xác nhận mật khẩu của bạn"
             name="confirmPassword"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

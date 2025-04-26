@@ -1,0 +1,83 @@
+.story-form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  .form-subtitle {
+    display: block;
+    margin-bottom: 24px;
+  }
+  
+  .story-form {
+    margin-top: 24px;
+    
+    .ant-form-item-label {
+      font-weight: 500;
+    }
+    
+    .tiptap-editor {
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      overflow: hidden;
+      
+      .editor-toolbar {
+        display: flex;
+        padding: 8px;
+        border-bottom: 1px solid #f0f0f0;
+        background-color: #fafafa;
+        
+        .ant-btn {
+          margin-right: 8px;
+        }
+      }
+      
+      .editor-content {
+        padding: 16px;
+        min-height: 200px;
+        
+        .ProseMirror {
+          min-height: 200px;
+          outline: none;
+          
+          &:focus {
+            outline: none;
+          }
+          
+          p {
+            margin-bottom: 1em;
+          }
+          
+          h2, h3 {
+            margin: 1em 0 0.5em;
+          }
+          
+          ul, ol {
+            padding-left: 1.5em;
+            margin-bottom: 1em;
+          }
+        }
+      }
+    }
+    
+    .story-image-uploader {
+      .ant-upload {
+        width: 100%;
+        height: 200px;
+      }
+      
+      img {
+        object-fit: cover;
+        height: 100%;
+      }
+    }
+    
+    .submit-button-container {
+      margin-top: 32px;
+      
+      .ant-btn {
+        height: 48px;
+        font-size: 16px;
+      }
+    }
+  }
+} 

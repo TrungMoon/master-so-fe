@@ -1,0 +1,53 @@
+.tools-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.tools-header {
+  margin-bottom: 32px;
+}
+
+.breadcrumb {
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  max-width: 800px;
+  color: #666;
+}
+
+.tools-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.custom-tabs .ant-tabs-nav {
+  margin-bottom: 20px;
+}
+
+.tab-content {
+  padding: 10px;
+}
+
+.tab-intro {
+  margin-bottom: 30px;
+  max-width: 800px;
+}
+
+.coming-soon {
+  text-align: center;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+  .tools-page {
+    padding: 16px;
+  }
+  
+  .tab-content {
+    padding: 0;
+  }
+} 

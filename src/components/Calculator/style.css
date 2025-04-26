@@ -1,0 +1,58 @@
+.calculator-container {
+  margin-bottom: 30px;
+}
+
+.calculator-form-card {
+  height: 100%;
+}
+
+.calculator-note {
+  margin-top: 30px;
+}
+
+.placeholder-card {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.placeholder-content {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 400px;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  color: #1890ff;
+  margin-bottom: 16px;
+}
+
+.result-card {
+  min-height: 500px;
+}
+
+.result-numbers {
+  margin: 20px 0;
+}
+
+.section-title {
+  margin-top: 20px;
+  color: #1890ff;
+}
+
+.trait-list, .advice-list {
+  padding-left: 20px;
+}
+
+.trait-list li, .advice-list li {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .result-card {
+    min-height: auto;
+  }
+} 

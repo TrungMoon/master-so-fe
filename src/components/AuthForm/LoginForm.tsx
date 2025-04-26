@@ -40,7 +40,7 @@ const LoginForm: React.FC = () => {
       <Title level={2} style={{ textAlign: 'center' }}>Đăng Nhập</Title>
       <Divider />
       
-      <Form layout="vertical" onFinish={formik.handleSubmit}>
+      <Form layout="vertical" onFinish={formik.handleSubmit} style={{ width: '100%' }}>
         <Form.Item 
           label="Email"
           validateStatus={formik.errors.email && formik.touched.email ? 'error' : ''}

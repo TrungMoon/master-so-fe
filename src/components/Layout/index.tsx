@@ -5,7 +5,10 @@ import {
   UserOutlined, 
   CalculatorOutlined, 
   BookOutlined,
-  MenuOutlined 
+  MenuOutlined,
+  CoffeeOutlined,
+  EditOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
 import './Layout.less'; // File CSS cho layout
@@ -13,35 +16,64 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const { Header, Content, Footer } = Layout;
 
+type MenuItem = Required<MenuProps>['items'][number];
+
 const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const location = useLocation();
   //const [currentUser, setCurrentUser] = useState<{ email: string } | null>(null); // Mock user
 
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
 
-  // Menu items (Desktop)
-  const items: MenuProps['items'] = [
-    {
-      key: 'home',
-      icon: <HomeOutlined />,
-      label: <Link to="/">Trang Chủ</Link>,
-    },
-    {
-      key: 'articles',
-      icon: <BookOutlined />,
-      label: 'Bài Viết',
-      children: [
-        { key: 'phong-thuy', label: <Link to="/articles/phong-thuy">Phong Thủy</Link> },
-        { key: 'tuong-so', label: <Link to="/articles/tuong-so">Tướng Số</Link> },
-      ],
-    },
-    {
-      key: 'tools',
-      icon: <CalculatorOutlined />,
-      label: <Link to="/tools">Công Cụ</Link>,
-    },
-  ];
+  // Build menu items array
+  const buildMenuItems = (): MenuItem[] => {
+    const baseItems: MenuItem[] = [
+      {
+        key: 'home',
+        icon: <HomeOutlined />,
+        label: <Link to="/">Trang Chủ</Link>,
+      },
+      {
+        key: 'articles',
+        icon: <BookOutlined />,
+        label: 'Bài Viết',
+        children: [
+          { key: 'phong-thuy', label: <Link to="/articles/phong-thuy">Phong Thủy</Link> },
+          { key: 'tuong-so', label: <Link to="/articles/tuong-so">Tướng Số</Link> },
+        ],
+      },
+      {
+        key: 'tools',
+        icon: <CalculatorOutlined />,
+        label: <Link to="/tools">Công Cụ</Link>,
+      },
+      {
+        key: 'stories',
+        icon: <CoffeeOutlined />,
+        label: 'Chuyện Linh Tinh',
+        children: [
+          { key: 'stories-list', label: <Link to="/stories">Danh sách</Link> },
+          ...(user ? [{ key: 'stories-create', label: <Link to="/stories/create">Viết bài mới</Link> }] : []),
+        ],
+      },
+    ];
+
+    // Add admin menu items if user is admin
+    if (isAdmin()) {
+      baseItems.push({
+        key: 'admin',
+        icon: <SettingOutlined />,
+        label: 'Quản trị',
+        children: [
+          { key: 'admin-stories', label: <Link to="/admin/stories">Kiểm duyệt bài viết</Link> },
+        ],
+      });
+    }
+
+    return baseItems;
+  };
+
+  const items = buildMenuItems();
 
   // Mobile menu
   const showDrawer = () => setVisible(true);
@@ -55,7 +87,7 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
           {/* Logo */}
           <Col xs={12} md={4}>
             <div className="logo">
-              <Link to="/">MasterSo</Link>
+              <Link to="/">DQT</Link>
             </div>
           </Col>
 
@@ -136,7 +168,7 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
         <Row gutter={[32, 32]}>
           <Col xs={24} md={8}>
             <h3>Về Chúng Tôi</h3>
-            <p>Trang web kiến thức phong thủy, tướng số hàng đầu Việt Nam</p>
+            <p>Chia sẻ, học tập tướng số hpong thủy người xưa</p>
           </Col>
 
           <Col xs={24} md={8}>
