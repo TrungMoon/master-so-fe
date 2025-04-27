@@ -13,10 +13,10 @@ const Tools: React.FC = () => {
   return (
     <div className="tools-page">
       <div className="tools-header">
-        <Breadcrumb className="breadcrumb">
+        {/* <Breadcrumb className="breadcrumb">
           <Breadcrumb.Item><Link to="/">Trang chủ</Link></Breadcrumb.Item>
           <Breadcrumb.Item>Công cụ</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
         
         <Title level={2}>Công Cụ Tính Tướng Số</Title>
         <Paragraph className="subtitle">

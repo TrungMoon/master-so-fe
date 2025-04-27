@@ -11,17 +11,8 @@ import { mockArticles } from './mockData';
 const { Title } = Typography;
 const { Option } = Select;
 
-interface ArticlePageProps {
-  category?: string;
-}
-
-const Article: React.FC<ArticlePageProps> = (props) => {
-  const params = useParams<{ category?: string }>();
-  const categoryFromProps = props.category;
-  const categoryFromParams = params.category;
-  
-  // Use category from props if provided, otherwise from URL params
-  const category = categoryFromProps || categoryFromParams;
+const Article: React.FC = () => {
+  const { category } = useParams<{ category: string }>();
   const [articles, setArticles] = useState<ArticleProps[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<ArticleProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
