@@ -27,19 +27,25 @@ interface AuthContextType {
   logout: () => void;
   hasPermission: (permission: string) => boolean; // Check if user has specific permission
   isAdmin: () => boolean; // Check if user is admin
+  isSuperAdmin: () => boolean; // Check if user is super admin
+  isRegularUser: () => boolean; // Check if user is regular user
+  getRedirectPath: () => string; // Get redirect path based on role
 }
 
 // Map roles to permissions
 const rolePermissions: { [key: string]: string[] } = {
-  Admin: [
+  SuperAdmin: [
     'create_story', 'edit_own_story', 'delete_own_story',
     'approve_story', 'reject_story', 'delete_any_story',
-    'view_pending_stories', 'comment_story', 'moderate_comments'
+    'view_pending_stories', 'comment_story', 'moderate_comments',
+    'view_users', 'edit_users', 'delete_users', 'manage_user_roles',
+    'manage_slides', 'manage_ads', 'manage_settings', 'access_dashboard'
   ],
-  Editor: [
+  Admin: [
     'create_story', 'edit_own_story', 'delete_own_story',
     'approve_story', 'reject_story', 'view_pending_stories',
-    'comment_story', 'moderate_comments'
+    'comment_story', 'moderate_comments', 'view_users',
+    'manage_slides', 'manage_ads', 'access_dashboard'
   ],
   User: [
     'create_story', 'edit_own_story', 'delete_own_story', 'comment_story'
@@ -56,6 +62,9 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
   hasPermission: () => false,
   isAdmin: () => false,
+  isSuperAdmin: () => false,
+  isRegularUser: () => false,
+  getRedirectPath: () => '/',
 });
 
 // Provider component
@@ -103,6 +112,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Check if user is admin
   const isAdmin = (): boolean => {
     return user?.roles?.includes('Admin') || false;
+  };
+
+  // Check if user is super admin
+  const isSuperAdmin = (): boolean => {
+    return user?.roles?.includes('SuperAdmin') || false;
+  };
+
+  // Check if user is regular user
+  const isRegularUser = (): boolean => {
+    return (user?.roles?.includes('User') && 
+            !user.roles.includes('Admin') && 
+            !user.roles.includes('SuperAdmin')) || false;
+  };
+
+  // Get redirect path based on role
+  const getRedirectPath = (): string => {
+    if (!user || !user.roles || user.roles.length === 0) {
+      return '/';
+    }
+    
+    if (user.roles.includes('SuperAdmin') || user.roles.includes('Admin')) {
+      return '/admin/dashboard';
+    }
+    
+    return '/';
   };
 
   // Xử lý đăng nhập
@@ -156,18 +190,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       register,
       logout,
       hasPermission,
-      isAdmin
+      isAdmin,
+      isSuperAdmin,
+      isRegularUser,
+      getRedirectPath
     }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook để sử dụng context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth phải được dùng trong AuthProvider');
-  }
-  return context;
-};
+// Hook để sử dụng AuthContext
+export const useAuth = () => useContext(AuthContext);

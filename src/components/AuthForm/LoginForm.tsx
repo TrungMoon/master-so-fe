@@ -9,7 +9,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 const LoginForm: React.FC = () => {
-  const { login } = useAuth();
+  const { login, getRedirectPath } = useAuth();
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -28,7 +28,9 @@ const LoginForm: React.FC = () => {
     onSubmit: async (values) => {
       try {
         await login(values.email, values.password);
-        navigate('/');
+        // Redirect based on user role
+        const redirectPath = getRedirectPath();
+        navigate(redirectPath);
       } catch (error) {
         console.error('Login error:', error);
       }

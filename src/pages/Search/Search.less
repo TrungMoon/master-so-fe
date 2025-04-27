@@ -1,0 +1,125 @@
+.search-page {
+  padding: 20px;
+  
+  .search-header {
+    margin-bottom: 20px;
+    
+    .ant-input-search {
+      max-width: 100%;
+      
+      .ant-input-search-button {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  
+  .filter-section {
+    margin-bottom: 16px;
+    
+    .ant-typography {
+      margin-bottom: 8px;
+    }
+    
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      
+      .clickable-tag {
+        cursor: pointer;
+        transition: all 0.3s;
+        
+        &:hover {
+          opacity: 0.8;
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+  
+  .search-results {
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+    }
+    
+    .empty-search {
+      text-align: center;
+      padding: 50px 0;
+    }
+    
+    .results-header {
+      margin-bottom: 20px;
+    }
+    
+    .results-list {
+      .result-item {
+        margin-bottom: 16px;
+      }
+    }
+    
+    .results-pagination {
+      margin-top: 24px;
+      text-align: center;
+    }
+  }
+  
+  .search-result-card {
+    width: 100%;
+    
+    .card-content {
+      .card-type {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      
+      .card-date {
+        display: block;
+        margin-bottom: 8px;
+      }
+      
+      .card-excerpt {
+        display: block;
+        margin-bottom: 16px;
+        color: rgba(0, 0, 0, 0.65);
+      }
+      
+      .card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        
+        .clickable-tag {
+          cursor: pointer;
+          transition: all 0.3s;
+          
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .search-page {
+    padding: 12px;
+    
+    .filter-section {
+      margin-bottom: 12px;
+    }
+    
+    .ant-card-body {
+      padding: 16px;
+    }
+  }
+} 

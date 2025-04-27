@@ -35,7 +35,7 @@ This application provides users with:
 ### Installation
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/master-so-fe.git
+   git clone https://github.com/TrungMoon/master-so-fe.git
    cd master-so-fe
    ```
 

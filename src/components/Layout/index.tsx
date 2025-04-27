@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, MenuProps, Row, Col, Button, Drawer, Avatar, Dropdown } from 'antd';
+import { Layout, Menu, MenuProps, Row, Col, Button, Drawer, Avatar, Dropdown, Input } from 'antd';
 import { 
   HomeOutlined, 
   UserOutlined, 
@@ -8,20 +8,22 @@ import {
   MenuOutlined,
   CoffeeOutlined,
   EditOutlined,
-  SettingOutlined
+  SettingOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Layout.less'; // File CSS cho layout
 import { useAuth } from '../../contexts/AuthContext';
 
 const { Header, Content, Footer } = Layout;
+const { Search } = Input;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const location = useLocation();
-  //const [currentUser, setCurrentUser] = useState<{ email: string } | null>(null); // Mock user
+  const navigate = useNavigate();
 
   const { user, logout, isAdmin } = useAuth();
 
@@ -73,91 +75,172 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
     return baseItems;
   };
 
+  // Mobile menu simplified items (for single line)
+  const mobileMenuItems: MenuItem[] = [
+    {
+      key: 'home',
+      label: <Link to="/">Trang Chủ</Link>,
+    },
+    {
+      key: 'articles',
+      label: <Link to="/articles/phong-thuy">Bài Viết</Link>,
+    },
+    {
+      key: 'tools',
+      label: <Link to="/tools">Công Cụ</Link>,
+    },
+    {
+      key: 'stories',
+      label: <Link to="/stories">Chuyện Linh Tinh</Link>,
+    },
+  ];
+
   const items = buildMenuItems();
 
-  // Mobile menu
+  // Drawer functions
   const showDrawer = () => setVisible(true);
   const onClose = () => setVisible(false);
+
+  // Handle search submission
+  const handleSearch = (value: string) => {
+    if (value.trim()) {
+      navigate(`/search?q=${encodeURIComponent(value.trim())}`);
+    }
+  };
 
   return (
     <Layout className="layout">
       {/* --- Navbar --- */}
       <Header className="header">
-        <Row justify="space-between" align="middle">
-          {/* Logo */}
-          <Col xs={12} md={4}>
-            <div className="logo">
-              <Link to="/">DQT</Link>
-            </div>
-          </Col>
+        <div className="header-content">
+          <Row justify="space-between" align="middle" style={{ height: '100%' }}>
+            {/* Logo */}
+            <Col xs={8} sm={4} md={3} className="logo-wrapper">
+              <div className="logo">
+                <Link to="/">DQT</Link>
+              </div>
+            </Col>
 
-          {/* Desktop Menu */}
-          <Col md={16} className="desktop-menu">
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              selectedKeys={[location.pathname]}
-              items={items}
-            />
-          </Col>
+            {/* Desktop Menu - now in same row as logo */}
+            <Col xs={0} sm={0} md={14} className="desktop-menu">
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                selectedKeys={[location.pathname.split('/')[1] || 'home']}
+                items={items}
+              />
+            </Col>
 
-          {/* Auth Section (Desktop) */}
-          <Col md={4} className="auth-section">
-          {user ? (
-  <div className="user-info">
-    <Avatar>{user.fullName?.[0]}</Avatar> {/* Hiển thị chữ cái đầu */}
-    <Dropdown
-      menu={{
-        items: [
-          { 
-            key: 'profile', 
-            label: <Link to="/profile">Hồ sơ</Link> 
-          },
-          { 
-            key: 'logout', 
-            label: 'Đăng xuất', 
-            onClick: logout // Gọi hàm logout từ context
-          }
-        ]
-      }}
-    >
-      <span className="email" style={{ cursor: 'pointer' }}>
-        {user.email}
-      </span>
-    </Dropdown>
-  </div>
-) : (
-  <div className="auth-buttons">
-    <Button type="primary">
-      <Link to="/login">Đăng Nhập</Link>
-    </Button>
-  </div>
-)}
-          </Col>
+            {/* Search Bar (Desktop) */}
+            <Col xs={0} sm={0} md={3} className="search-section">
+              <Search
+                placeholder="Tìm kiếm..."
+                onSearch={handleSearch}
+                style={{ width: '100%', marginTop: 16, marginLeft: -20 }}
+              />
+            </Col>
 
-          {/* Mobile Menu Toggle */}
-          <Col xs={12} md={0} className="mobile-menu-toggle">
-            <Button 
-              type="text" 
-              icon={<MenuOutlined />} 
-              onClick={showDrawer}
-            />
-          </Col>
-        </Row>
+            {/* Auth Section (Desktop) */}
+            <Col xs={0} sm={0} md={4} className="auth-section">
+            {user ? (
+              <div className="user-info">
+                <Avatar>{user.fullName?.[0]}</Avatar>
+                <Dropdown
+                  menu={{
+                    items: [
+                      { 
+                        key: 'profile', 
+                        label: <Link to="/profile">Hồ sơ</Link> 
+                      },
+                      { 
+                        key: 'logout', 
+                        label: 'Đăng xuất', 
+                        onClick: logout
+                      }
+                    ]
+                  }}
+                >
+                  <span className="email" style={{ cursor: 'pointer' }}>
+                    {user.email}
+                  </span>
+                </Dropdown>
+              </div>
+            ) : (
+              <div className="auth-buttons">
+                <Button type="primary">
+                  <Link to="/login">Đăng Nhập</Link>
+                </Button>
+              </div>
+            )}
+            </Col>
+
+            {/* Mobile Navigation Menu */}
+            <Col xs={10} sm={14} md={0} className="mobile-menu-wrapper">
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                selectedKeys={[location.pathname.split('/')[1] || 'home']}
+                items={mobileMenuItems}
+                className="mobile-menu-line"
+                disabledOverflow
+              />
+            </Col>
+
+            {/* Mobile Right Controls */}
+            <Col xs={6} sm={6} md={0} className="mobile-controls">
+              {/* Search Icon */}
+              <Button 
+                type="text" 
+                icon={<SearchOutlined />} 
+                onClick={showDrawer}
+                className="control-button"
+              />
+              
+              {/* User/Login */}
+              {user ? (
+                <Avatar size="small" className="user-avatar">{user.fullName?.[0]}</Avatar>
+              ) : (
+                <Button size="small" type="primary" className="login-button">
+                  <Link to="/login">Đăng Nhập</Link>
+                </Button>
+              )}
+            </Col>
+          </Row>
+        </div>
       </Header>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer (for search and user profile) */}
       <Drawer
-        title="Menu"
+        title="Tìm kiếm"
         placement="right"
         onClose={onClose}
         open={visible}
       >
-        <Menu
-          mode="vertical"
-          selectedKeys={[location.pathname]}
-          items={items}
-        />
+        {/* Search Bar (Mobile) */}
+        <div className="mobile-search-container">
+          <Search
+            placeholder="Tìm kiếm..."
+            onSearch={(value) => {
+              handleSearch(value);
+              onClose();
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+        
+        {/* User Profile / Additional Options */}
+        {user && (
+          <div className="mobile-user-profile">
+            <h3>Tài khoản</h3>
+            <Menu
+              mode="vertical"
+              items={[
+                { key: 'profile', label: <Link to="/profile">Hồ sơ</Link> },
+                { key: 'logout', label: <span onClick={logout}>Đăng xuất</span> }
+              ]}
+            />
+          </div>
+        )}
       </Drawer>
 
       {/* --- Main Content --- */}
@@ -167,30 +250,27 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
       <Footer className="footer">
         <Row gutter={[32, 32]}>
           <Col xs={24} md={8}>
-            <h3>Về Chúng Tôi</h3>
-            <p>Chia sẻ, học tập tướng số hpong thủy người xưa</p>
+            <h3>Về chúng tôi</h3>
+            <p>Trang thông tin Phong Thủy, Tướng Số và Tử Vi uy tín, cung cấp kiến thức bổ ích và công cụ hỗ trợ.</p>
           </Col>
-
           <Col xs={24} md={8}>
-            <h3>Liên Kết Nhanh</h3>
-            <Menu
-              mode="vertical"
-              items={[
-                { key: 'terms', label: <Link to="/terms">Điều Khoản</Link> },
-                { key: 'privacy', label: <Link to="/privacy">Chính Sách</Link> },
-              ]}
-            />
+            <h3>Liên kết</h3>
+            <Menu mode="vertical" theme="light" selectable={false}>
+              <Menu.Item key="home"><Link to="/">Trang chủ</Link></Menu.Item>
+              <Menu.Item key="articles"><Link to="/articles/phong-thuy">Bài viết</Link></Menu.Item>
+              <Menu.Item key="tools"><Link to="/tools">Công cụ</Link></Menu.Item>
+              <Menu.Item key="stories"><Link to="/stories">Chuyện linh tinh</Link></Menu.Item>
+            </Menu>
           </Col>
-
           <Col xs={24} md={8}>
-            <h3>Liên Hệ</h3>
-            <p>Email: contact@masterso.com</p>
-            <p>Hotline: 1900 8888</p>
+            <h3>Liên hệ</h3>
+            <p>Email: info@masterso.vn</p>
+            <p>Điện thoại: (84) 123 456 789</p>
+            <p>Địa chỉ: Thành phố Hồ Chí Minh, Việt Nam</p>
           </Col>
         </Row>
-
         <div className="copyright">
-          © {new Date().getFullYear()} MasterSo. All rights reserved.
+          <p>© {new Date().getFullYear()} MasterSo. All rights reserved.</p>
         </div>
       </Footer>
     </Layout>

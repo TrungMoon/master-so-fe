@@ -16,9 +16,15 @@ CREATE TABLE Users (
 -- Roles Table - Store user roles for permission management
 CREATE TABLE Roles (
     RoleID INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(50) NOT NULL UNIQUE, -- Admin, User, Editor, etc.
+    Name NVARCHAR(50) NOT NULL UNIQUE, -- SuperAdmin, Admin, User, Editor, etc.
     Description NVARCHAR(255)
 );
+
+-- Initial roles
+INSERT INTO Roles (Name, Description) VALUES
+('SuperAdmin', 'Highest level access with full control over all system features'),
+('Admin', 'Administrative access with content management capabilities'),
+('User', 'Standard user access');
 
 -- UserRoles Table - Many-to-many relationship between Users and Roles
 CREATE TABLE UserRoles (
@@ -37,6 +43,30 @@ CREATE TABLE Permissions (
     Description NVARCHAR(255)
 );
 
+-- Define all permissions
+INSERT INTO Permissions (Name, Description) VALUES
+-- Content management
+('create_story', 'Create new stories/articles'),
+('edit_own_story', 'Edit own stories'),
+('delete_own_story', 'Delete own stories'),
+('approve_story', 'Approve pending stories'),
+('reject_story', 'Reject pending stories'),
+('delete_any_story', 'Delete any story regardless of ownership'),
+('view_pending_stories', 'View stories pending approval'),
+-- Comment management
+('comment_story', 'Add comments to stories'),
+('moderate_comments', 'Approve/reject/delete comments'),
+-- User management
+('view_users', 'View user information'),
+('edit_users', 'Edit user information'),
+('delete_users', 'Delete user accounts'),
+('manage_user_roles', 'Assign/remove user roles'),
+-- System management
+('manage_slides', 'Manage homepage slides/banners'),
+('manage_ads', 'Manage advertisements'),
+('manage_settings', 'Manage system settings'),
+('access_dashboard', 'Access admin dashboard');
+
 -- RolePermissions Table - Many-to-many relationship between Roles and Permissions
 CREATE TABLE RolePermissions (
     RoleID INT NOT NULL,
@@ -44,6 +74,36 @@ CREATE TABLE RolePermissions (
     PRIMARY KEY (RoleID, PermissionID),
     FOREIGN KEY (RoleID) REFERENCES Roles(RoleID) ON DELETE CASCADE,
     FOREIGN KEY (PermissionID) REFERENCES Permissions(PermissionID) ON DELETE CASCADE
+);
+
+-- Assign permissions to SuperAdmin (all permissions)
+INSERT INTO RolePermissions (RoleID, PermissionID)
+SELECT 
+    (SELECT RoleID FROM Roles WHERE Name = 'SuperAdmin'),
+    PermissionID
+FROM Permissions;
+
+-- Assign permissions to Admin
+INSERT INTO RolePermissions (RoleID, PermissionID)
+SELECT 
+    (SELECT RoleID FROM Roles WHERE Name = 'Admin'),
+    PermissionID
+FROM Permissions
+WHERE Name IN (
+    'create_story', 'edit_own_story', 'delete_own_story',
+    'approve_story', 'reject_story', 'view_pending_stories',
+    'comment_story', 'moderate_comments', 'view_users',
+    'manage_slides', 'manage_ads', 'access_dashboard'
+);
+
+-- Assign permissions to User
+INSERT INTO RolePermissions (RoleID, PermissionID)
+SELECT 
+    (SELECT RoleID FROM Roles WHERE Name = 'User'),
+    PermissionID
+FROM Permissions
+WHERE Name IN (
+    'create_story', 'edit_own_story', 'delete_own_story', 'comment_story'
 );
 
 -- Categories Table - Store article categories
@@ -227,33 +287,6 @@ INSERT INTO Categories (Name, Slug, Description) VALUES
 ('Nhân Tướng', 'nhan-tuong', N'Kiến thức về nhân tướng học và cách đọc tướng người'),
 ('Tử Vi', 'tu-vi', N'Kiến thức về tử vi, chiêm tinh và dự đoán vận mệnh'),
 ('Chuyện Linh Tinh', 'chuyen-linh-tinh', N'Những câu chuyện, trải nghiệm về phong thủy, tướng số từ cộng đồng');
-
--- Insert initial roles
-INSERT INTO Roles (Name, Description) VALUES
-('Admin', N'Quản trị viên có toàn quyền trên hệ thống'),
-('User', N'Người dùng thông thường'),
-('Editor', N'Biên tập viên có thể viết và duyệt bài');
-
--- Insert initial permissions
-INSERT INTO Permissions (Name, Description) VALUES
-('create_story', N'Tạo bài viết mới'),
-('edit_own_story', N'Sửa bài viết của chính mình'),
-('delete_own_story', N'Xóa bài viết của chính mình'),
-('approve_story', N'Duyệt bài viết'),
-('reject_story', N'Từ chối bài viết'),
-('delete_any_story', N'Xóa bất kỳ bài viết nào'),
-('view_pending_stories', N'Xem danh sách bài viết chờ duyệt'),
-('comment_story', N'Bình luận trên bài viết'),
-('moderate_comments', N'Kiểm duyệt bình luận');
-
--- Assign permissions to roles
-INSERT INTO RolePermissions (RoleID, PermissionID) VALUES
--- Admin permissions (all)
-(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9),
--- User permissions
-(2, 1), (2, 2), (2, 3), (2, 8),
--- Editor permissions
-(3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 7), (3, 8), (3, 9);
 
 -- Insert initial tag data
 INSERT INTO Tags (Name, Slug) VALUES 

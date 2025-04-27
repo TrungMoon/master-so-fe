@@ -4,6 +4,8 @@
 
 .home-carousel {
   margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .carousel-content {
@@ -99,11 +101,17 @@
 @media (max-width: 768px) {
   .carousel-content {
     height: 300px;
+    padding-top: 16px;
   }
   
   .carousel-text {
     margin-left: 5%;
     max-width: 90%;
+    padding-top: 16px;
+  }
+
+  .home-carousel {
+    margin-top: 0;
   }
 
   .tools-content {

@@ -1,0 +1,271 @@
+# MASTERSO PROJECT ROADMAP
+
+## MỤC ĐÍCH CHÍNH
+- Xây dựng nền tảng chia sẻ kiến thức phong thủy, nhân tướng học
+- Cung cấp công cụ bói toán số mệnh (Cân Xương Tính Lượng) chính xác
+- Tạo hệ sinh thái cho cộng đồng yêu thích văn hóa phương Đông
+- Phân chia quyền hạn người dùng với 3 cấp độ: User, Admin, SuperAdmin
+
+## CẤU TRÚC HỆ THỐNG
+1. **Frontend (React + TypeScript)**
+   - UI Framework: Ant Design
+   - State Management: Context API + React Query
+   - Routing: React Router v6
+   - Form Validation: Formik + Yup
+   - Styling: CSS + Less (Ant Design theming)
+   - Build Tool: Create React App
+
+2. **Backend (Spring Boot) - Giai đoạn sau**
+   - RESTful API với OpenAPI 3.0
+   - Authentication: JWT
+   - Authorization: RBAC (Role-Based Access Control)
+   - Security: Spring Security
+   - Validation: Bean Validation API
+
+3. **Database (SQL Server)**
+   - Lược đồ cơ bản:
+     - Users, Roles, Permissions
+     - Articles, Stories, Comments
+     - Categories, Tags
+     - User Profiles, Favorites, Calculations
+   - Quan hệ nhiều-nhiều: UserRoles, RolePermissions
+   - Bảo mật theo chuẩn GDPR
+
+## QUÁ TRÌNH PHÁT TRIỂN
+
+### ✅ GIAI ĐOẠN 1: KHỞI TẠO (2/2024)
+- **Thiết lập cơ sở dự án**
+  - Khởi tạo React + TypeScript project
+  - Cấu hình ESLint, Prettier
+  - Thiết lập Git Flow quy trình
+  - Tạo cấu trúc thư mục chuẩn
+
+- **Thiết kế cơ sở dữ liệu**
+  - Phân tích yêu cầu
+  - Thiết kế ERD
+  - Tạo database schema SQL
+  - Tối ưu các quan hệ
+
+- **Xây dựng cơ sở FE**
+  - Layout chung
+  - Context API cho state management
+  - Routing cơ bản
+  - Responsive design
+
+### ✅ GIAI ĐOẠN 2: PHÁT TRIỂN TÍNH NĂNG CƠ BẢN (4/2024)
+- **Authentication**
+  - Đăng ký, đăng nhập
+  - Đăng xuất
+  - JWT token flow
+  - Bảo vệ route
+
+- **Trang chủ và Điều hướng**
+  - Header với navigation
+  - Footer thông tin
+  - Responsive menu
+  - Carousel slide
+
+- **Quản lý bài viết**
+  - Danh sách bài viết
+  - Xem chi tiết bài viết
+  - Tạo bài viết mới
+  - Editor rich text
+
+- **Trang thông tin cá nhân**
+  - Xem thông tin cá nhân
+  - Cập nhật thông tin
+  - Lịch sử hoạt động
+  - Danh sách bài viết đã đăng
+
+### ✅ GIAI ĐOẠN 3: PHÁT TRIỂN TÍNH NĂNG NGƯỜI DÙNG (6/2024)
+- **Bình luận**
+  - Thêm bình luận vào bài viết
+  - Xóa/sửa bình luận cá nhân
+  - Reply bình luận
+  - Phân trang bình luận
+
+- **Công cụ Phong Thủy**
+  - Tool Cân Xương Tính Lượng
+  - Tool kiểm tra ngày tốt
+  - Tính toán năm sinh
+  - Lưu kết quả tính toán
+
+- **Cải thiện UX**
+  - Thêm tooltips
+  - Skeleton loading
+  - Error handling
+  - Thông báo sự kiện
+
+- **Đa ngôn ngữ**
+  - i18n framework
+  - Ngôn ngữ: Tiếng Việt, Tiếng Anh
+  - Language switcher
+  - Bản địa hóa nội dung
+
+### 🔄 GIAI ĐOẠN 4: PHÁT TRIỂN ADMIN PANEL (7/2024) - HIỆN TẠI
+- **Thiết kế hệ thống phân quyền**
+  - Cấu trúc Permissions
+  - Role-based access control
+  - Phân quyền chi tiết
+  - SuperAdmin > Admin > User
+
+- **Admin Dashboard**
+  - Statistics overview
+  - Charts và biểu đồ
+  - Activity logs
+  - Quản lý tài nguyên
+
+- **User Management**
+  - Xem danh sách người dùng
+  - Chỉnh sửa thông tin người dùng
+  - Phân quyền người dùng
+  - Khóa/mở tài khoản
+
+- **Content Management**
+  - Duyệt bài viết
+  - Quản lý danh mục
+  - Quản lý slide show
+  - Quản lý quảng cáo
+
+### 🔜 GIAI ĐOẠN 5: HOÀN THIỆN FE VÀ HỢP NHẤT BE (8-9/2024)
+- **Tích hợp Backend**
+  - Connect API với BE
+  - Error handling
+  - Loading states
+  - Retry mechanism
+
+- **SEO Optimization**
+  - Meta tags
+  - Sitemap
+  - Schema markup
+  - Tối ưu performance
+
+- **Progressive Web App**
+  - Service workers
+  - Offline support
+  - Push notifications
+  - App-like experience
+
+- **Testing**
+  - Unit tests
+  - Integration tests
+  - E2E tests với Cypress
+  - Performance testing
+
+## TIẾN ĐỘ HIỆN TẠI (7/2024)
+🟢 **Hoàn thành:**
+- Thiết kế cơ sở dữ liệu với ba vai trò: User, Admin, SuperAdmin
+- Xây dựng hệ thống authentication cơ bản
+- Thiết kế các trang người dùng
+- Định nghĩa các quyền hạn theo vai trò
+- Hệ thống đăng nhập/đăng ký
+
+🟡 **Đang triển khai:**
+- **[Hiện tại]** Admin Dashboard và phân quyền
+  - Redirect theo role khi đăng nhập
+  - Dashboard thống kê
+  - User Management page
+  - Quản lý bài viết
+  - Phân quyền SuperAdmin/Admin
+- **[Mới]** Hệ thống tìm kiếm đa chức năng
+  - Tìm kiếm bài viết theo tag, tiêu đề, nội dung
+  - UI/UX cho thanh tìm kiếm toàn cục
+  - Hiển thị kết quả tìm kiếm với filter
+  - Chuẩn bị API contract cho BE tìm kiếm
+
+🔴 **Chưa bắt đầu:**
+- Tích hợp các trang quản lý slide và quảng cáo
+- Component Settings cho SuperAdmin
+- Tích hợp Backend API thực tế
+- Tối ưu performance
+
+## CÁC TEST CASE ĐÃ HOÀN THÀNH
+1. **Authentication Flow**
+   - Đăng nhập thành công và lưu token
+   - Đăng nhập thất bại với thông báo lỗi
+   - Đăng ký với validation đầy đủ
+   - Logout xóa token và user info
+
+2. **Phân quyền**
+   - SuperAdmin có quyền truy cập toàn bộ hệ thống
+   - Admin không thể sửa/xóa SuperAdmin hoặc Admin khác
+   - User không thể truy cập Admin Panel
+   - Check permission cho các chức năng đặc biệt
+
+3. **Routing & Redirection**
+   - Admin/SuperAdmin redirect to Dashboard sau login
+   - User redirect to Homepage sau login
+   - Bảo vệ route Admin với AdminRoute
+   - Bảo vệ route SuperAdmin với SuperAdminRoute
+
+4. **UI Components**
+   - Responsive trên desktop/tablet/mobile
+   - Theme design nhất quán
+   - Loading states và error handling
+   - Form validation đầy đủ
+
+## KẾ HOẠCH PHÁT TRIỂN SẮP TỚI
+1. **Hoàn thiện Admin Panel**
+   - Thêm trang quản lý slide (1 tuần)
+   - Thêm trang quản lý quảng cáo (1 tuần)
+   - Thêm trang cài đặt hệ thống cho SuperAdmin (2 tuần)
+   - Tối ưu layout và UX cho Admin (1 tuần)
+
+2. **Phát triển tính năng tìm kiếm** *(Mới)*
+   - **Frontend (2 tuần)**
+     - Thiết kế component Search toàn cục (3 ngày)
+     - Trang kết quả tìm kiếm với filter (4 ngày)
+     - Tính năng gợi ý tìm kiếm (autocomplete) (3 ngày)
+     - Tối ưu UX tìm kiếm (4 ngày)
+   
+   - **Backend (3 tuần)**
+     - Xây dựng API tìm kiếm theo tag (1 tuần)
+     - Xây dựng API tìm kiếm theo tiêu đề/nội dung (1 tuần)
+     - Tối ưu performance query tìm kiếm (indexing) (1 tuần)
+     - Chuẩn bị mở rộng tìm kiếm cho sản phẩm (prep only)
+
+3. **Chuẩn bị cho tích hợp Backend**
+   - Thiết kế API Contract (1 tuần)
+   - Mock API Service (1 tuần)
+   - Cập nhật các service calls (2 tuần)
+   - Thêm error handling và retry logic (1 tuần)
+
+4. **UI/UX Enhancements**
+   - Dark mode (1 tuần)
+   - Animation & Transitions (1 tuần)
+   - Accessibility improvements (1 tuần)
+   - Performance optimization (2 tuần)
+
+## CHIẾN LƯỢC MỞ RỘNG
+1. **Marketing & Social Features**
+   - Forum/Comment system
+   - User-generated content
+   - Share to social media
+   - User rankings & reputation
+
+2. **Monetization**
+   - Premium content subscription
+   - Advanced calculation tools (Pro version)
+   - Marketplace cho vật phẩm phong thủy
+   - Affiliate marketing
+
+3. **E-commerce Integration** *(Cập nhật)*
+   - Xây dựng module sản phẩm phong thủy
+   - Tích hợp tìm kiếm sản phẩm vào hệ thống tìm kiếm
+   - Giỏ hàng và Thanh toán
+   - Quản lý đơn hàng và hàng tồn kho
+
+4. **Mobile App**
+   - React Native version
+   - Native features (camera, GPS)
+   - Push notifications
+   - Offline mode
+
+5. **AI Integration**
+   - Chatbot tư vấn phong thủy
+   - Phân tích tướng mặt qua AI
+   - Personalized content recommendations
+   - Voice interface
+
+## KẾT LUẬN
+Dự án MasterSo đang tiến triển tốt theo kế hoạch, hiện đang tập trung vào việc hoàn thiện Admin Panel với hệ thống phân quyền. Ưu tiên hiện tại là hoàn thiện chức năng quản lý người dùng, nội dung và chuẩn bị cho việc tích hợp Backend. Tiếp theo sẽ là tối ưu UX/UI và chuẩn bị cho các tính năng mở rộng trong tương lai. 
