@@ -437,3 +437,106 @@
     padding-top: 10px;
   }
 }
+
+// Mobile Navigation
+.mobile-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px 0 4px;
+  z-index: 1000;
+  display: none;
+  
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.65);
+    padding: 4px 0;
+    transition: color 0.3s;
+    
+    &.active {
+      color: #1890ff;
+    }
+    
+    .nav-icon {
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    
+    .nav-text {
+      font-size: 12px;
+      text-align: center;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .mobile-navigation {
+    display: block;
+  }
+  
+  .content {
+    padding-bottom: 60px; // Add padding for mobile navigation
+    min-height: calc(100vh - 188px); // Adjusted for mobile navigation
+  }
+  
+  // Simplified mobile header
+  .header {
+    padding: 0 16px;
+    
+    .logo-wrapper {
+      height: 56px;
+    }
+    
+    .mobile-menu-wrapper {
+      display: none !important; // Hide old horizontal menu
+    }
+    
+    .mobile-controls {
+      height: 56px;
+      
+      .control-button, .login-button {
+        margin-left: 16px;
+      }
+    }
+  }
+  
+  // Mobile breadcrumb adjustments
+  .page-header-wrapper {
+    .ant-page-header {
+      padding: 12px 16px;
+      
+      .ant-breadcrumb {
+        display: none; // Hide breadcrumb on mobile
+      }
+      
+      .ant-page-header-heading-title {
+        font-size: 18px;
+      }
+    }
+  }
+  
+  // Mobile content card adjustments
+  .article-card, .tool-card {
+    margin-bottom: 12px;
+    
+    .ant-card-body {
+      padding: 12px;
+    }
+    
+    .ant-card-meta-title {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .ant-card-meta-description {
+      font-size: 12px;
+    }
+  }
+}

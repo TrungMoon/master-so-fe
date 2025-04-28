@@ -11,11 +11,13 @@ import {
   SettingOutlined,
   SearchOutlined,
   AppstoreOutlined,
-  ReadOutlined
+  ReadOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Layout.less'; // File CSS cho layout
 import { useAuth } from '../../contexts/AuthContext';
+import MobileNavigation from './MobileNavigation';
 
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
@@ -107,26 +109,6 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
     return baseItems;
   };
 
-  // Mobile menu simplified items (for single line)
-  const mobileMenuItems: MenuItem[] = [
-    {
-      key: 'home',
-      label: <Link to="/">Trang Chủ</Link>,
-    },
-    {
-      key: 'articles',
-      label: <Link to="/articles/phong-thuy">Bài Viết</Link>,
-    },
-    {
-      key: 'tools',
-      label: <Link to="/tools">Công Cụ</Link>,
-    },
-    {
-      key: 'stories',
-      label: <Link to="/stories">Chuyện Linh Tinh</Link>,
-    },
-  ];
-
   const items = buildMenuItems();
 
   // Drawer functions
@@ -140,6 +122,9 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }
   };
 
+  // Check if current page isn't home to show back button on mobile
+  const showBackButton = location.pathname !== '/';
+
   return (
     <Layout className="layout">
       {/* --- Navbar --- */}
@@ -147,8 +132,18 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
         <div className="header-content">
           <Row justify="space-between" align="middle" style={{ height: '100%' }}>
             
+            {/* Mobile Back Button (only on non-home pages) */}
+            <Col xs={showBackButton ? 4 : 0} sm={showBackButton ? 4 : 0} md={0}>
+              <Button 
+                type="text" 
+                icon={<ArrowLeftOutlined />} 
+                onClick={() => navigate(-1)}
+                style={{ color: 'white' }}
+              />
+            </Col>
+            
             {/* Logo */}
-            <Col xs={8} sm={4} md={1} className="logo-wrapper">
+            <Col xs={showBackButton ? 14 : 18} sm={showBackButton ? 14 : 18} md={1} className="logo-wrapper">
               <div className="logo">
                 <Link to="/">DQT</Link>
               </div>
@@ -207,18 +202,6 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
             )}
             </Col>
 
-            {/* Mobile Navigation Menu */}
-            <Col xs={10} sm={14} md={0} className="mobile-menu-wrapper">
-              <Menu
-                theme="dark"
-                mode="horizontal"
-                selectedKeys={[location.pathname.split('/')[1] || 'home']}
-                items={mobileMenuItems}
-                className="mobile-menu-line"
-                disabledOverflow
-              />
-            </Col>
-
             {/* Mobile Right Controls */}
             <Col xs={6} sm={6} md={0} className="mobile-controls">
               {/* Search Icon */}
@@ -227,22 +210,14 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 icon={<SearchOutlined />} 
                 onClick={showDrawer}
                 className="control-button"
+                style={{ color: 'white' }}
               />
-              
-              {/* User/Login */}
-              {user ? (
-                <Avatar size="small" className="user-avatar">{user.fullName?.[0]}</Avatar>
-              ) : (
-                <Button size="small" type="primary" className="login-button">
-                  <Link to="/login">Đăng Nhập</Link>
-                </Button>
-              )}
             </Col>
           </Row>
         </div>
       </Header>
 
-      {/* Mobile Drawer (for search and user profile) */}
+      {/* Mobile Drawer (for search) */}
       <Drawer
         title="Tìm kiếm"
         placement="right"
@@ -260,20 +235,6 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
             style={{ width: '100%' }}
           />
         </div>
-        
-        {/* User Profile / Additional Options */}
-        {user && (
-          <div className="mobile-user-profile">
-            <h3>Tài khoản</h3>
-            <Menu
-              mode="vertical"
-              items={[
-                { key: 'profile', label: <Link to="/profile">Hồ sơ</Link> },
-                { key: 'logout', label: <span onClick={logout}>Đăng xuất</span> }
-              ]}
-            />
-          </div>
-        )}
       </Drawer>
 
       {/* --- Main Content --- */}
@@ -306,6 +267,9 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
           <p>© {new Date().getFullYear()} MasterSo. All rights reserved.</p>
         </div>
       </Footer>
+      
+      {/* Mobile Bottom Navigation */}
+      <MobileNavigation />
     </Layout>
   );
 };

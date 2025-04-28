@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Input, Pagination, Select, Typography, Breadcrumb, Empty, Spin } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { Row, Col, Input, Pagination, Select, Typography, Breadcrumb, Empty, Spin, Space, Button } from 'antd';
 import { useParams, Link } from 'react-router-dom';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, FilterOutlined, CloseOutlined } from '@ant-design/icons';
 import ArticleCard, { ArticleProps } from '../../components/ArticleCard';
 import './style.css';
 
@@ -32,6 +32,15 @@ const Article: React.FC<ArticlePageProps> = (props) => {
 
   // Sort options
   const [sortBy, setSortBy] = useState<string>('newest');
+  
+  // Mobile filter drawer
+  const [filterVisible, setFilterVisible] = useState<boolean>(false);
+  
+  // Check if we're on mobile
+  const isMobile = window.innerWidth <= 768;
+  
+  // Ref for filter section to measure height
+  const filterSectionRef = useRef<HTMLDivElement>(null);
 
   // Get category title
   const getCategoryTitle = (categorySlug: string | undefined) => {
@@ -124,20 +133,61 @@ const Article: React.FC<ArticlePageProps> = (props) => {
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
+  // Toggle filter visibility on mobile
+  const toggleFilter = () => {
+    setFilterVisible(!filterVisible);
+  };
+  
+  // Clear search
+  const clearSearch = () => {
+    setSearch('');
+  };
 
   return (
     <div className="articles-page">
       <div className="article-header">
-        <Breadcrumb className="breadcrumb">
-          <Breadcrumb.Item><Link to="/">Trang chủ</Link></Breadcrumb.Item>
-          <Breadcrumb.Item>Bài viết</Breadcrumb.Item>
-          <Breadcrumb.Item>{getCategoryTitle(category)}</Breadcrumb.Item>
-        </Breadcrumb>
+        {/* Breadcrumb - visible only on desktop */}
+        <div className="desktop-only">
+          <Breadcrumb className="breadcrumb">
+            <Breadcrumb.Item><Link to="/">Trang chủ</Link></Breadcrumb.Item>
+            <Breadcrumb.Item>Bài viết</Breadcrumb.Item>
+            <Breadcrumb.Item>{getCategoryTitle(category)}</Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
         
         <Title level={2}>{getCategoryTitle(category)}</Title>
       </div>
 
-      <div className="filter-section">
+      {/* Mobile filter toggle button */}
+      <div className={`mobile-filter-toggle ${isMobile ? '' : 'desktop-only'}`}>
+        <Space>
+          {search && (
+            <span className="search-query">
+              Tìm kiếm: "{search}" 
+              <Button 
+                type="text" 
+                size="small" 
+                icon={<CloseOutlined />} 
+                onClick={clearSearch}
+              />
+            </span>
+          )}
+          <Button 
+            type="primary" 
+            icon={<FilterOutlined />} 
+            onClick={toggleFilter}
+          >
+            Bộ lọc
+          </Button>
+        </Space>
+      </div>
+
+      {/* Filter section - conditionally visible on mobile */}
+      <div 
+        className={`filter-section ${filterVisible || !isMobile ? 'visible' : 'hidden'}`}
+        ref={filterSectionRef}
+      >
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} md={12} lg={16}>
             <Input
@@ -160,6 +210,19 @@ const Article: React.FC<ArticlePageProps> = (props) => {
               <Option value="popular">Phổ biến nhất</Option>
             </Select>
           </Col>
+          
+          {/* Mobile only - Apply filter button */}
+          {isMobile && (
+            <Col xs={24} className="mobile-only">
+              <Button 
+                type="primary" 
+                block 
+                onClick={toggleFilter}
+              >
+                Áp dụng
+              </Button>
+            </Col>
+          )}
         </Row>
       </div>
 
@@ -170,13 +233,16 @@ const Article: React.FC<ArticlePageProps> = (props) => {
           </div>
         ) : currentArticles.length > 0 ? (
           <>
-            <Row gutter={[24, 24]}>
-              {currentArticles.map(article => (
-                <Col xs={24} sm={12} md={8} key={article.id}>
-                  <ArticleCard article={article} showStats />
-                </Col>
-              ))}
-            </Row>
+            {/* Articles list - using different layouts for mobile and desktop */}
+            <div className={isMobile ? 'mobile-article-list' : 'grid-view article-list'}>
+              <Row gutter={[16, 16]}>
+                {currentArticles.map(article => (
+                  <Col xs={24} sm={12} md={8} key={article.id}>
+                    <ArticleCard article={article} showStats={!isMobile} />
+                  </Col>
+                ))}
+              </Row>
+            </div>
             
             <div className="pagination-container">
               <Pagination
@@ -185,6 +251,8 @@ const Article: React.FC<ArticlePageProps> = (props) => {
                 total={totalArticles}
                 onChange={handlePageChange}
                 showSizeChanger={false}
+                size={isMobile ? 'small' : 'default'}
+                simple={isMobile}
               />
             </div>
           </>
