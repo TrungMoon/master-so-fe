@@ -540,3 +540,151 @@
     }
   }
 }
+
+// Mobile menu drawer styles
+.ant-drawer-content-wrapper {
+  max-width: 100%;
+}
+
+.ant-drawer-right.ant-drawer-open .ant-drawer-content-wrapper {
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.ant-drawer-title {
+  font-size: 18px;
+  color: #001529;
+}
+
+.mobile-auth-buttons {
+  padding: 0 16px;
+  margin-top: 24px;
+}
+
+// Enhanced mobile controls
+.mobile-controls {
+  .control-button {
+    font-size: 20px;
+    padding: 0 8px;
+    margin-left: 10px;
+    transition: transform 0.3s;
+    
+    &:hover, &:active, &:focus {
+      transform: scale(1.1);
+      color: #fff !important;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  // ... existing code ...
+  
+  // Make mobile menu icon more prominent
+  .mobile-controls {
+    .control-button {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 8px;
+      
+      &:last-child {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+    }
+  }
+  
+  // Full width drawer for small devices
+  @media (max-width: 480px) {
+    .ant-drawer-content-wrapper {
+      width: 80% !important;
+    }
+  }
+}
+
+// Mobile menu color options
+.mobile-menu-yellow {
+  .ant-drawer-header {
+    background-color: #faad14;
+    color: #000;
+  }
+  
+  .ant-drawer-title {
+    color: #000;
+  }
+  
+  .ant-menu {
+    background-color: #fff8e6;
+    
+    .ant-menu-item-selected {
+      background-color: #faad14 !important;
+      color: #000 !important;
+    }
+    
+    .ant-menu-submenu-title:hover,
+    .ant-menu-item:hover {
+      color: #d48806 !important;
+    }
+  }
+  
+  .mobile-auth-buttons {
+    .ant-btn-primary {
+      background-color: #faad14;
+      border-color: #faad14;
+    }
+  }
+}
+
+.mobile-menu-red {
+  .ant-drawer-header {
+    background-color: #f5222d;
+    color: #fff;
+  }
+  
+  .ant-drawer-title {
+    color: #fff;
+  }
+  
+  .ant-menu {
+    background-color: #fff1f0;
+    
+    .ant-menu-item-selected {
+      background-color: #f5222d !important;
+      color: #fff !important;
+    }
+    
+    .ant-menu-submenu-title:hover,
+    .ant-menu-item:hover {
+      color: #cf1322 !important;
+    }
+  }
+  
+  .mobile-auth-buttons {
+    .ant-btn-primary {
+      background-color: #f5222d;
+      border-color: #f5222d;
+    }
+  }
+}
+
+// Header top controls
+.header-top-controls {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  z-index: 1001;
+  
+  .control-button {
+    color: white;
+    font-size: 20px;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

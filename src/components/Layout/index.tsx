@@ -25,7 +25,8 @@ const { Search } = Input;
 type MenuItem = Required<MenuProps>['items'][number];
 
 const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [visible, setVisible] = useState(false);
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -112,13 +113,18 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
   const items = buildMenuItems();
 
   // Drawer functions
-  const showDrawer = () => setVisible(true);
-  const onClose = () => setVisible(false);
+  const showSearchDrawer = () => setSearchVisible(true);
+  const closeSearchDrawer = () => setSearchVisible(false);
+  
+  // Menu drawer functions
+  const showMenuDrawer = () => setMenuVisible(true);
+  const closeMenuDrawer = () => setMenuVisible(false);
 
   // Handle search submission
   const handleSearch = (value: string) => {
     if (value.trim()) {
       navigate(`/search?q=${encodeURIComponent(value.trim())}`);
+      closeSearchDrawer();
     }
   };
 
@@ -132,21 +138,50 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
         <div className="header-content">
           <Row justify="space-between" align="middle" style={{ height: '100%' }}>
             
-            {/* Mobile Back Button (only on non-home pages) */}
-            <Col xs={showBackButton ? 4 : 0} sm={showBackButton ? 4 : 0} md={0}>
-              <Button 
-                type="text" 
-                icon={<ArrowLeftOutlined />} 
-                onClick={() => navigate(-1)}
-                style={{ color: 'white' }}
-              />
-            </Col>
-            
-            {/* Logo */}
-            <Col xs={showBackButton ? 14 : 18} sm={showBackButton ? 14 : 18} md={1} className="logo-wrapper">
+            {/* 1. Logo */}
+            <Col
+              xs={{ span: 8, order: 1 }}
+              sm={{ span: 8, order: 1 }}
+              md={1}
+              className="logo-wrapper"
+            >
               <div className="logo">
                 <Link to="/">DQT</Link>
               </div>
+            </Col>
+
+            {/* 2. Search (mobile only) */}
+            <Col
+              xs={{ span: 8, order: 2 }}
+              sm={{ span: 8, order: 2 }}
+              md={0}
+              className="mobile-search"
+              style={{ textAlign: 'center' }}
+            >
+              <Button
+                type="text"
+                icon={<SearchOutlined />}
+                onClick={showSearchDrawer}
+                className="control-button"
+                style={{ color: 'white' }}
+              />
+            </Col>
+
+            {/* 3. Menu (mobile only) */}
+            <Col
+              xs={{ span: 8, order: 3 }}
+              sm={{ span: 8, order: 3 }}
+              md={0}
+              className="mobile-menu"
+              style={{ textAlign: 'right' }}
+            >
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={showMenuDrawer}
+                className="control-button"
+                style={{ color: 'white' }}
+              />
             </Col>
 
             {/* Desktop Menu - now in same row as logo */}
@@ -201,18 +236,6 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
               </div>
             )}
             </Col>
-
-            {/* Mobile Right Controls */}
-            <Col xs={6} sm={6} md={0} className="mobile-controls">
-              {/* Search Icon */}
-              <Button 
-                type="text" 
-                icon={<SearchOutlined />} 
-                onClick={showDrawer}
-                className="control-button"
-                style={{ color: 'white' }}
-              />
-            </Col>
           </Row>
         </div>
       </Header>
@@ -221,20 +244,49 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
       <Drawer
         title="Tìm kiếm"
         placement="right"
-        onClose={onClose}
-        open={visible}
+        onClose={closeSearchDrawer}
+        open={searchVisible}
       >
         {/* Search Bar (Mobile) */}
         <div className="mobile-search-container">
           <Search
             placeholder="Tìm kiếm..."
-            onSearch={(value) => {
-              handleSearch(value);
-              onClose();
-            }}
+            onSearch={handleSearch}
             style={{ width: '100%' }}
           />
         </div>
+      </Drawer>
+      
+      {/* Mobile Menu Drawer */}
+      <Drawer
+        title="Menu"
+        placement="right"
+        onClose={closeMenuDrawer}
+        open={menuVisible}
+        width={280}
+      >
+        <Menu
+          mode="inline"
+          selectedKeys={[location.pathname.split('/')[1] || 'home']}
+          style={{ border: 'none' }}
+          items={items}
+          onClick={() => {
+            // Close menu drawer when a menu item is clicked
+            closeMenuDrawer();
+          }}
+        />
+        
+        {/* Login/Register buttons if user not logged in */}
+        {!user && (
+          <div className="mobile-auth-buttons">
+            <Button type="primary" block style={{ marginTop: 16 }}>
+              <Link to="/login">Đăng Nhập</Link>
+            </Button>
+            <Button block style={{ marginTop: 8 }}>
+              <Link to="/register">Đăng Ký</Link>
+            </Button>
+          </div>
+        )}
       </Drawer>
 
       {/* --- Main Content --- */}
