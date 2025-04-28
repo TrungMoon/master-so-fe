@@ -13,6 +13,9 @@ import StoryModeration from './pages/Admin/StoryModeration';
 import AdminDashboard from './pages/Admin/Dashboard';
 import UserManagement from './pages/Admin/Users';
 import SearchPage from './pages/Search';
+import BooksLibrary from './pages/Books';
+import BookDetail from './pages/Books/Detail';
+import BookManagement from './pages/Admin/BookManagement';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './App.css';
@@ -84,6 +87,12 @@ const App = () => {
               <Route path="articles/tuong-so" element={<Article category="tuong-so" />} />
               <Route path="stories" element={<Stories />} />
               <Route path="search" element={<SearchPage />} />
+              
+              {/* Books routes */}
+              <Route path="books" element={<BooksLibrary />} />
+              <Route path="books/:id" element={<BookDetail />} />
+              <Route path="books/category/:category" element={<BooksLibrary />} />
+              
               <Route
                 path="stories/create"
                 element={
@@ -139,6 +148,18 @@ const App = () => {
                 <AdminRoute>
                   <AdminLayout>
                     <UserManagement />
+                  </AdminLayout>
+                </AdminRoute>
+              } 
+            />
+            
+            {/* Book management route */}
+            <Route 
+              path="/admin/books" 
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <BookManagement />
                   </AdminLayout>
                 </AdminRoute>
               } 

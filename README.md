@@ -70,6 +70,11 @@ This application provides users with:
 - Favorite articles for logged-in users
 - Advanced search functionality
 - Daily horoscope
+- Book library with free and premium content
+- Subscription system for premium access
+- E-book reading and downloading capabilities
+- Book ratings and reviews
+- Payment integration for book purchases
 
 ## Project Structure
 

@@ -1,0 +1,89 @@
+.books-library {
+  padding: 20px 0;
+}
+
+.books-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.books-header .subtitle {
+  font-size: 16px;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.books-controls {
+  margin-bottom: 20px;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.sort-label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+
+.books-content {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.category-tabs .ant-tabs-nav {
+  margin-bottom: 30px;
+}
+
+.category-tabs .ant-tabs-tab {
+  padding: 12px 20px;
+  margin-right: 10px;
+  transition: all 0.3s;
+}
+
+.category-tabs .ant-tabs-tab-active {
+  background-color: #f0f5ff;
+}
+
+.pagination-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .sort-control {
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  
+  .books-header {
+    padding: 0 20px;
+  }
+}
+
+/* Badge de libros premium/gratis */
+.book-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.book-badge.free {
+  background-color: #52c41a;
+}
+
+.book-badge.premium {
+  background-color: #722ed1;
+} 

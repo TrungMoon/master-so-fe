@@ -39,16 +39,19 @@ const rolePermissions: { [key: string]: string[] } = {
     'approve_story', 'reject_story', 'delete_any_story',
     'view_pending_stories', 'comment_story', 'moderate_comments',
     'view_users', 'edit_users', 'delete_users', 'manage_user_roles',
-    'manage_slides', 'manage_ads', 'manage_settings', 'access_dashboard'
+    'manage_slides', 'manage_ads', 'manage_settings', 'access_dashboard',
+    'manage_books', 'download_premium_books'
   ],
   Admin: [
     'create_story', 'edit_own_story', 'delete_own_story',
     'approve_story', 'reject_story', 'view_pending_stories',
     'comment_story', 'moderate_comments', 'view_users',
-    'manage_slides', 'manage_ads', 'access_dashboard'
+    'manage_slides', 'manage_ads', 'access_dashboard',
+    'manage_books', 'download_premium_books'
   ],
   User: [
-    'create_story', 'edit_own_story', 'delete_own_story', 'comment_story'
+    'create_story', 'edit_own_story', 'delete_own_story', 'comment_story',
+    'download_premium_books'
   ]
 };
 

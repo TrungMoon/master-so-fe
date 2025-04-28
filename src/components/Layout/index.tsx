@@ -9,7 +9,9 @@ import {
   CoffeeOutlined,
   EditOutlined,
   SettingOutlined,
-  SearchOutlined
+  SearchOutlined,
+  AppstoreOutlined,
+  ReadOutlined
 } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Layout.less'; // File CSS cho layout
@@ -25,7 +27,7 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isSuperAdmin } = useAuth();
 
   // Build menu items array
   const buildMenuItems = (): MenuItem[] => {
@@ -37,7 +39,7 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
       },
       {
         key: 'articles',
-        icon: <BookOutlined />,
+        icon: <AppstoreOutlined />,
         label: 'Bài Viết',
         children: [
           { key: 'phong-thuy', label: <Link to="/articles/phong-thuy">Phong Thủy</Link> },
@@ -58,10 +60,15 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
           ...(user ? [{ key: 'stories-create', label: <Link to="/stories/create">Viết bài mới</Link> }] : []),
         ],
       },
+      {
+        key: 'books',
+        icon: <BookOutlined />,
+        label: <Link to="/books">Thư viện sách</Link>,
+      },
     ];
 
     // Add admin menu items if user is admin
-    if (isAdmin()) {
+    if (isAdmin() || isSuperAdmin()) {
       baseItems.push({
         key: 'admin',
         icon: <SettingOutlined />,
@@ -69,6 +76,31 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
         children: [
           { key: 'admin-stories', label: <Link to="/admin/stories">Kiểm duyệt bài viết</Link> },
         ],
+      });
+    }
+
+    // Add user menu items
+    if (user) {
+      baseItems.push({
+        key: 'profile',
+        icon: <UserOutlined />,
+        label: user.fullName || user.email,
+        children: [
+          {
+            key: 'profile',
+            label: <Link to="/profile">Thông tin cá nhân</Link>,
+          },
+          isAdmin() || isSuperAdmin() ? (
+            {
+              key: 'admin',
+              label: <Link to="/admin/dashboard">Quản lý</Link>,
+            }
+          ) : null,
+          {
+            key: 'logout',
+            label: <span onClick={logout}>Đăng xuất</span>,
+          },
+        ].filter(Boolean),
       });
     }
 
@@ -114,15 +146,16 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
       <Header className="header">
         <div className="header-content">
           <Row justify="space-between" align="middle" style={{ height: '100%' }}>
+            
             {/* Logo */}
-            <Col xs={8} sm={4} md={3} className="logo-wrapper">
+            <Col xs={8} sm={4} md={1} className="logo-wrapper">
               <div className="logo">
                 <Link to="/">DQT</Link>
               </div>
             </Col>
 
             {/* Desktop Menu - now in same row as logo */}
-            <Col xs={0} sm={0} md={14} className="desktop-menu">
+            <Col xs={0} sm={0} md={19} className="desktop-menu">
               <Menu
                 theme="dark"
                 mode="horizontal"
@@ -136,12 +169,12 @@ const LayoutComponent: React.FC<{ children: React.ReactNode }> = ({ children }) 
               <Search
                 placeholder="Tìm kiếm..."
                 onSearch={handleSearch}
-                style={{ width: '100%', marginTop: 16, marginLeft: -20 }}
+                style={{ width: '100%', marginTop: 16, marginLeft: -30 }}
               />
             </Col>
 
             {/* Auth Section (Desktop) */}
-            <Col xs={0} sm={0} md={4} className="auth-section">
+            <Col xs={0} sm={0} md={1} className="auth-section">
             {user ? (
               <div className="user-info">
                 <Avatar>{user.fullName?.[0]}</Avatar>

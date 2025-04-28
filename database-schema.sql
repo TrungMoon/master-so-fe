@@ -65,7 +65,10 @@ INSERT INTO Permissions (Name, Description) VALUES
 ('manage_slides', 'Manage homepage slides/banners'),
 ('manage_ads', 'Manage advertisements'),
 ('manage_settings', 'Manage system settings'),
-('access_dashboard', 'Access admin dashboard');
+('access_dashboard', 'Access admin dashboard'),
+-- Book management
+('manage_books', 'Add, edit and delete books'),
+('download_premium_books', 'Download premium books that require payment');
 
 -- RolePermissions Table - Many-to-many relationship between Roles and Permissions
 CREATE TABLE RolePermissions (
@@ -93,7 +96,8 @@ WHERE Name IN (
     'create_story', 'edit_own_story', 'delete_own_story',
     'approve_story', 'reject_story', 'view_pending_stories',
     'comment_story', 'moderate_comments', 'view_users',
-    'manage_slides', 'manage_ads', 'access_dashboard'
+    'manage_slides', 'manage_ads', 'access_dashboard',
+    'manage_books', 'download_premium_books'
 );
 
 -- Assign permissions to User
@@ -103,7 +107,8 @@ SELECT
     PermissionID
 FROM Permissions
 WHERE Name IN (
-    'create_story', 'edit_own_story', 'delete_own_story', 'comment_story'
+    'create_story', 'edit_own_story', 'delete_own_story', 'comment_story',
+    'download_premium_books'
 );
 
 -- Categories Table - Store article categories
@@ -305,4 +310,130 @@ INSERT INTO Tags (Name, Slug) VALUES
 INSERT INTO Proverbs (Content, Meaning, Category) VALUES 
 (N'Tướng tùy tâm sinh, tâm tùy tướng diệt', N'Tướng mạo thay đổi theo tâm tính, khi tâm thay đổi, tướng mạo cũng sẽ thay đổi theo', 'NhanTuong'),
 (N'Nhất động bất như nhất tĩnh', N'Một phần động không bằng một phần tĩnh (trong phong thủy)', 'PhongThuy'),
-(N'Nhân phải sinh tờ địa lý, địa lý sinh tờ nhân phải', N'Con người phải sinh ra từ đất đai có khí tốt, đất đai tốt sinh ra con người tốt', 'PhongThuy'); 
+(N'Nhân phải sinh tờ địa lý, địa lý sinh tờ nhân phải', N'Con người phải sinh ra từ đất đai có khí tốt, đất đai tốt sinh ra con người tốt', 'PhongThuy');
+
+-- Books Table - Store book information
+CREATE TABLE Books (
+    BookID INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(200) NOT NULL,
+    Slug NVARCHAR(255) NOT NULL UNIQUE,
+    Author NVARCHAR(100) NOT NULL,
+    Publisher NVARCHAR(100),
+    PublishYear INT,
+    Description NTEXT,
+    CoverImageURL NVARCHAR(255),
+    FileURL NVARCHAR(255), -- Link to PDF or other digital format
+    CategoryID INT NOT NULL,
+    Pages INT,
+    ISBN NVARCHAR(20),
+    IsFree BIT DEFAULT 0, -- 0: Premium, 1: Free
+    Price DECIMAL(10, 2) DEFAULT 0, -- Price for premium books
+    AddedByUserID INT NOT NULL, -- Admin who added the book
+    ViewCount INT DEFAULT 0,
+    DownloadCount INT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    IsPublished BIT DEFAULT 1,
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID),
+    FOREIGN KEY (AddedByUserID) REFERENCES Users(UserID)
+);
+
+-- BookTags Table - Many-to-many relationship between Books and Tags
+CREATE TABLE BookTags (
+    BookID INT NOT NULL,
+    TagID INT NOT NULL,
+    PRIMARY KEY (BookID, TagID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,
+    FOREIGN KEY (TagID) REFERENCES Tags(TagID) ON DELETE CASCADE
+);
+
+-- BookChapters Table - For books with chapter information
+CREATE TABLE BookChapters (
+    ChapterID INT IDENTITY(1,1) PRIMARY KEY,
+    BookID INT NOT NULL,
+    Title NVARCHAR(200) NOT NULL,
+    ChapterNumber INT NOT NULL,
+    Content NTEXT,
+    IsFree BIT DEFAULT 0, -- Free sample chapters
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE
+);
+
+-- UserBookFavorites Table - Store user's favorite books
+CREATE TABLE UserBookFavorites (
+    UserID INT NOT NULL,
+    BookID INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (UserID, BookID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE
+);
+
+-- UserBookDownloads Table - Track which users have downloaded which books
+CREATE TABLE UserBookDownloads (
+    DownloadID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    BookID INT NOT NULL,
+    DownloadDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE
+);
+
+-- BookComments Table - Store user comments on books
+CREATE TABLE BookComments (
+    CommentID INT IDENTITY(1,1) PRIMARY KEY,
+    BookID INT NOT NULL,
+    UserID INT NOT NULL,
+    Content NVARCHAR(1000) NOT NULL,
+    Rating INT, -- 1-5 star rating
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    Status NVARCHAR(20) DEFAULT 'Approved', -- Approved, Pending, Rejected
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- BookCategories Table - Additional categories specifically for books
+CREATE TABLE BookCategories (
+    BookCategoryID INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Slug NVARCHAR(100) NOT NULL UNIQUE,
+    Description NVARCHAR(500),
+    ParentCategoryID INT,
+    FOREIGN KEY (ParentCategoryID) REFERENCES BookCategories(BookCategoryID)
+);
+
+-- Insert initial book categories
+INSERT INTO BookCategories (Name, Slug, Description) VALUES 
+(N'Phong Thủy', 'sach-phong-thuy', N'Sách về phong thủy và cách ứng dụng vào cuộc sống'),
+(N'Nhân Tướng Học', 'sach-nhan-tuong-hoc', N'Sách về nhân tướng học và cách đọc tướng người'),
+(N'Tử Vi', 'sach-tu-vi', N'Sách về tử vi, chiêm tinh và dự đoán vận mệnh'),
+(N'Cổ Học Tinh Hoa', 'co-hoc-tinh-hoa', N'Sách về triết học phương Đông và văn hóa truyền thống');
+
+-- UserSubscriptions Table - For premium content access
+CREATE TABLE UserSubscriptions (
+    SubscriptionID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    PlanName NVARCHAR(50) NOT NULL, -- Basic, Premium, etc.
+    StartDate DATETIME NOT NULL,
+    EndDate DATETIME NOT NULL,
+    IsActive BIT DEFAULT 1,
+    PaymentStatus NVARCHAR(20) DEFAULT 'Paid', -- Paid, Pending, Failed
+    Amount DECIMAL(10, 2) NOT NULL,
+    PaymentMethod NVARCHAR(50),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+-- PaymentTransactions Table - Track payment history
+CREATE TABLE PaymentTransactions (
+    TransactionID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    Amount DECIMAL(10, 2) NOT NULL,
+    Currency NVARCHAR(3) DEFAULT 'VND',
+    PaymentMethod NVARCHAR(50) NOT NULL,
+    Status NVARCHAR(20) NOT NULL, -- Success, Failed, Pending
+    TransactionDate DATETIME DEFAULT GETDATE(),
+    Description NVARCHAR(255),
+    ReferenceID NVARCHAR(100), -- ID from payment gateway
+    Type NVARCHAR(20) NOT NULL, -- Subscription, BookPurchase
+    RelatedID INT, -- SubscriptionID or BookID
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+); 

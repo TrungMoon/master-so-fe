@@ -1,0 +1,52 @@
+TạoCSSchoBooksManagement
+
+.books-management {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.book-thumbnail {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Form styles */
+.ant-form-item-label {
+  font-weight: 500;
+}
+
+/* Table styles */
+.ant-table-tbody > tr > td {
+  vertical-align: middle;
+}
+
+/* Modal styles */
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-modal-header {
+  border-radius: 8px 8px 0 0;
+}
+
+/* Button styles */
+.ant-btn-dangerous {
+  color: #ff4d4f;
+  background: #fff;
+  border-color: #ff4d4f;
+}
+
+.ant-btn-dangerous:hover,
+.ant-btn-dangerous:focus {
+  color: #ff7875;
+  background: #fff;
+  border-color: #ff7875;
+}

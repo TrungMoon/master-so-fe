@@ -1,0 +1,57 @@
+.book-management {
+  margin-bottom: 20px;
+}
+
+.book-management-header {
+  margin-bottom: 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content .subtitle {
+  color: #666;
+  margin-top: 5px;
+}
+
+.book-management-content {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.book-management-content .ant-table-thead > tr > th {
+  background-color: #f5f8ff;
+  font-weight: 600;
+}
+
+.book-management-content .ant-pagination {
+  margin: 16px 0;
+}
+
+/* Estilos para el modal de edición/creación */
+.ant-modal-body .ant-form-item-label > label {
+  font-weight: 500;
+}
+
+.premium-note {
+  color: #722ed1;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-content button {
+    margin-top: 16px;
+    align-self: flex-start;
+  }
+} 

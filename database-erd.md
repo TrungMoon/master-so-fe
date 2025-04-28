@@ -175,4 +175,95 @@ UserFavorites
 Categories 1──* Articles
      │
      └─────1 ParentCategory
-``` 
+```
+
+## Books Management
+
+### Books Table
+- **BookID** INT PK
+- **Title** NVARCHAR(200) NOT NULL
+- **Slug** NVARCHAR(255) NOT NULL UNIQUE
+- **Author** NVARCHAR(100) NOT NULL
+- **Publisher** NVARCHAR(100)
+- **PublishYear** INT
+- **Description** NTEXT
+- **CoverImageURL** NVARCHAR(255)
+- **FileURL** NVARCHAR(255)
+- **CategoryID** INT NOT NULL FK -> Categories.CategoryID
+- **Pages** INT
+- **ISBN** NVARCHAR(20)
+- **IsFree** BIT DEFAULT 0
+- **Price** DECIMAL(10, 2) DEFAULT 0
+- **AddedByUserID** INT NOT NULL FK -> Users.UserID
+- **ViewCount** INT DEFAULT 0
+- **DownloadCount** INT DEFAULT 0
+- **CreatedAt** DATETIME DEFAULT GETDATE()
+- **UpdatedAt** DATETIME DEFAULT GETDATE()
+- **IsPublished** BIT DEFAULT 1
+
+### BookTags Table (M:M relationship)
+- **BookID** INT NOT NULL FK -> Books.BookID
+- **TagID** INT NOT NULL FK -> Tags.TagID
+- PK (BookID, TagID)
+
+### BookChapters Table (1:M relationship)
+- **ChapterID** INT PK
+- **BookID** INT NOT NULL FK -> Books.BookID
+- **Title** NVARCHAR(200) NOT NULL
+- **ChapterNumber** INT NOT NULL
+- **Content** NTEXT
+- **IsFree** BIT DEFAULT 0
+
+### UserBookFavorites Table (M:M relationship)
+- **UserID** INT NOT NULL FK -> Users.UserID
+- **BookID** INT NOT NULL FK -> Books.BookID
+- **CreatedAt** DATETIME DEFAULT GETDATE()
+- PK (UserID, BookID)
+
+### UserBookDownloads Table
+- **DownloadID** INT PK
+- **UserID** INT NOT NULL FK -> Users.UserID
+- **BookID** INT NOT NULL FK -> Books.BookID
+- **DownloadDate** DATETIME DEFAULT GETDATE()
+
+### BookComments Table
+- **CommentID** INT PK
+- **BookID** INT NOT NULL FK -> Books.BookID
+- **UserID** INT NOT NULL FK -> Users.UserID
+- **Content** NVARCHAR(1000) NOT NULL
+- **Rating** INT
+- **CreatedAt** DATETIME DEFAULT GETDATE()
+- **Status** NVARCHAR(20) DEFAULT 'Approved'
+
+### BookCategories Table (Tree structure)
+- **BookCategoryID** INT PK
+- **Name** NVARCHAR(100) NOT NULL
+- **Slug** NVARCHAR(100) NOT NULL UNIQUE
+- **Description** NVARCHAR(500)
+- **ParentCategoryID** INT FK -> BookCategories.BookCategoryID
+
+## Payment System
+
+### UserSubscriptions Table
+- **SubscriptionID** INT PK
+- **UserID** INT NOT NULL FK -> Users.UserID
+- **PlanName** NVARCHAR(50) NOT NULL
+- **StartDate** DATETIME NOT NULL
+- **EndDate** DATETIME NOT NULL
+- **IsActive** BIT DEFAULT 1
+- **PaymentStatus** NVARCHAR(20) DEFAULT 'Paid'
+- **Amount** DECIMAL(10, 2) NOT NULL
+- **PaymentMethod** NVARCHAR(50)
+
+### PaymentTransactions Table
+- **TransactionID** INT PK
+- **UserID** INT NOT NULL FK -> Users.UserID
+- **Amount** DECIMAL(10, 2) NOT NULL
+- **Currency** NVARCHAR(3) DEFAULT 'VND'
+- **PaymentMethod** NVARCHAR(50) NOT NULL
+- **Status** NVARCHAR(20) NOT NULL
+- **TransactionDate** DATETIME DEFAULT GETDATE()
+- **Description** NVARCHAR(255)
+- **ReferenceID** NVARCHAR(100)
+- **Type** NVARCHAR(20) NOT NULL
+- **RelatedID** INT 

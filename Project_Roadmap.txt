@@ -127,12 +127,32 @@
   - Quản lý slide show
   - Quản lý quảng cáo
 
+- **Book Management**
+  - Tạo cấu trúc database cho Books
+  - Giao diện quản lý sách
+  - Upload/xóa/sửa sách
+  - Phân loại sách (Free/Premium)
+  - Quản lý danh mục sách
+
 ### 🔜 GIAI ĐOẠN 5: HOÀN THIỆN FE VÀ HỢP NHẤT BE (8-9/2024)
 - **Tích hợp Backend**
   - Connect API với BE
   - Error handling
   - Loading states
   - Retry mechanism
+
+- **Hệ thống Thư viện sách**
+  - Trang danh sách sách
+  - Trang chi tiết sách
+  - Tính năng đọc trực tuyến
+  - Tính năng tải sách (cho user đã đăng nhập)
+  - Hệ thống đánh giá và bình luận sách
+
+- **Hệ thống Thanh toán**
+  - Tích hợp cổng thanh toán
+  - Quản lý gói thành viên
+  - Lịch sử giao dịch
+  - Mua sách premium
 
 - **SEO Optimization**
   - Meta tags
@@ -167,17 +187,19 @@
   - User Management page
   - Quản lý bài viết
   - Phân quyền SuperAdmin/Admin
-- **[Mới]** Hệ thống tìm kiếm đa chức năng
-  - Tìm kiếm bài viết theo tag, tiêu đề, nội dung
-  - UI/UX cho thanh tìm kiếm toàn cục
-  - Hiển thị kết quả tìm kiếm với filter
-  - Chuẩn bị API contract cho BE tìm kiếm
+- **[Mới]** Hệ thống quản lý sách
+  - Thiết kế database cho Books
+  - UI/UX cho trang quản lý sách
+  - Upload/edit/delete sách
+  - Phân loại sách theo danh mục
+  - Phân quyền cho quản lý sách
 
 🔴 **Chưa bắt đầu:**
 - Tích hợp các trang quản lý slide và quảng cáo
 - Component Settings cho SuperAdmin
 - Tích hợp Backend API thực tế
 - Tối ưu performance
+- Hệ thống thanh toán cho sách premium
 
 ## CÁC TEST CASE ĐÃ HOÀN THÀNH
 1. **Authentication Flow**
@@ -203,6 +225,25 @@
    - Theme design nhất quán
    - Loading states và error handling
    - Form validation đầy đủ
+
+## CÁC TEST CASE MỚI - HỆ THỐNG SÁCH
+1. **Quản lý sách Admin**
+   - Thêm sách mới với thông tin đầy đủ
+   - Upload file PDF/EPUB cho sách
+   - Cập nhật thông tin sách
+   - Xóa sách và xác nhận
+
+2. **Phân quyền sách**
+   - SuperAdmin có thể thêm/sửa/xóa tất cả sách
+   - Admin có thể thêm/sửa/xóa sách mình thêm
+   - User có thể xem danh sách/chi tiết sách
+   - User đã mua/đăng ký có thể tải sách premium
+
+3. **Hiển thị sách**
+   - Filter sách theo danh mục
+   - Sắp xếp theo các tiêu chí (mới nhất, phổ biến, đánh giá)
+   - Tìm kiếm sách theo tên/tác giả
+   - Phân trang kết quả
 
 ## KẾ HOẠCH PHÁT TRIỂN SẮP TỚI
 1. **Hoàn thiện Admin Panel**
