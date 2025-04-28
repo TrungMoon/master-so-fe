@@ -6,6 +6,7 @@ export interface SearchParams {
   category?: string;
   page?: number;
   pageSize?: number;
+  contentTypes?: string[]; // Add contentTypes to filter by article, story, book, etc.
 }
 
 export interface SearchResult {
@@ -17,8 +18,12 @@ export interface SearchResult {
   createdAt: string;
   thumbnail?: string;
   tags: string[];
-  type: 'article' | 'story' | 'product'; // For future product integration
+  type: 'article' | 'story' | 'product' | 'book'; // Added 'book' type
   url: string;
+  author?: string; // Added for books
+  publishYear?: number; // Added for books
+  isFree?: boolean; // Added for books
+  price?: number; // Added for books
 }
 
 export interface SearchResponse {
@@ -63,11 +68,44 @@ const mockSearchData: SearchResult[] = [
     tags: ['chia sẻ', 'tướng số', 'trải nghiệm'],
     type: 'story',
     url: '/stories/3'
+  },
+  // Thêm mock data cho sách
+  {
+    id: 101,
+    title: 'Phong Thủy Ứng Dụng',
+    excerpt: 'Cuốn sách hướng dẫn phong thủy ứng dụng cho cuộc sống hiện đại',
+    content: 'Cuốn sách Phong Thủy Ứng Dụng cung cấp kiến thức nền tảng...',
+    category: 'phong-thuy',
+    createdAt: '2023-09-15',
+    thumbnail: 'https://example.com/images/book-phong-thuy.jpg',
+    tags: ['phong thủy', 'sách', 'ứng dụng'],
+    type: 'book',
+    url: '/books/101',
+    author: 'Nguyễn Văn A',
+    publishYear: 2022,
+    isFree: false,
+    price: 150000
+  },
+  {
+    id: 102,
+    title: 'Nhân Tướng Học Căn Bản',
+    excerpt: 'Tổng hợp kiến thức cơ bản về nhân tướng học truyền thống',
+    content: 'Nhân Tướng Học Căn Bản giúp bạn tìm hiểu về cách xem tướng...',
+    category: 'tuong-so',
+    createdAt: '2023-10-20',
+    thumbnail: 'https://example.com/images/book-tuong-so.jpg',
+    tags: ['tướng số', 'sách', 'cơ bản'],
+    type: 'book',
+    url: '/books/102',
+    author: 'Trần Văn B',
+    publishYear: 2021,
+    isFree: true,
+    price: 0
   }
 ];
 
 const searchService = {
-  // Search articles, stories, and products (future) by query and tags
+  // Search articles, stories, books, and products by query and tags
   search: async (params: SearchParams): Promise<SearchResponse> => {
     try {
       // When backend is ready, uncomment this:
@@ -75,14 +113,16 @@ const searchService = {
       // return response.data;
       
       // Mock implementation for frontend development
-      const { query, tags, category, page = 1, pageSize = 10 } = params;
+      const { query, tags, category, page = 1, pageSize = 10, contentTypes } = params;
       
       // Filter by query (case-insensitive)
       const queryLower = query.toLowerCase();
       let filteredResults = mockSearchData.filter(item => 
         item.title.toLowerCase().includes(queryLower) || 
         item.content.toLowerCase().includes(queryLower) ||
-        item.excerpt.toLowerCase().includes(queryLower)
+        item.excerpt.toLowerCase().includes(queryLower) ||
+        // Thêm tìm kiếm theo tác giả cho sách
+        (item.author && item.author.toLowerCase().includes(queryLower))
       );
       
       // Filter by tags if provided
@@ -96,6 +136,13 @@ const searchService = {
       if (category) {
         filteredResults = filteredResults.filter(item => 
           item.category === category
+        );
+      }
+
+      // Filter by content types if provided
+      if (contentTypes && contentTypes.length > 0) {
+        filteredResults = filteredResults.filter(item => 
+          contentTypes.includes(item.type)
         );
       }
       
@@ -131,6 +178,32 @@ const searchService = {
       ).slice(0, 5); // Return top 5 matches
     } catch (error) {
       console.error('Tag suggestion error:', error);
+      throw error;
+    }
+  },
+
+  // Get author suggestions for book search
+  getAuthorSuggestions: async (query: string): Promise<string[]> => {
+    try {
+      // When backend is ready, uncomment this:
+      // const response = await api.get('/authors/suggestions', { params: { query } });
+      // return response.data;
+      
+      // Mock implementation
+      const bookResults = mockSearchData.filter(item => item.type === 'book');
+      const allAuthors = Array.from(
+        new Set(
+          bookResults
+            .map(book => book.author)
+            .filter(author => author !== undefined) as string[]
+        )
+      );
+      
+      return allAuthors.filter(author => 
+        author.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5); // Return top 5 matches
+    } catch (error) {
+      console.error('Author suggestion error:', error);
       throw error;
     }
   }
